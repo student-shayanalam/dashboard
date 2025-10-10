@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+
+import axios from "axios";
+
+import GeneralContext from "./GeneralContext";
 
 import { Tooltip, Grow } from "@mui/material";
 
@@ -56,9 +60,10 @@ const WatchList = () => {
 
       <ul className="list">
         {watchlist.map((stock, index) => {
-          return <WatchlistItem stock={stock} key={index} />;
+          return <WatchListItem stock={stock} key={index} />;
         })}
       </ul>
+
       <DoughnoutChart data={data} />
     </div>
   );
@@ -66,14 +71,14 @@ const WatchList = () => {
 
 export default WatchList;
 
-const WatchlistItem = ({ stock }) => {
+const WatchListItem = ({ stock }) => {
   const [showWatchlistActions, setShowWatchlistActions] = useState(false);
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (e) => {
     setShowWatchlistActions(true);
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (e) => {
     setShowWatchlistActions(false);
   };
 
@@ -86,7 +91,7 @@ const WatchlistItem = ({ stock }) => {
           {stock.isDown ? (
             <KeyboardArrowDown className="down" />
           ) : (
-            <KeyboardArrowUp className="up" />
+            <KeyboardArrowUp className="down" />
           )}
           <span className="price">{stock.price}</span>
         </div>
@@ -97,6 +102,12 @@ const WatchlistItem = ({ stock }) => {
 };
 
 const WatchListActions = ({ uid }) => {
+  const generalContext = useContext(GeneralContext);
+
+  const handleBuyClick = () => {
+    generalContext.openBuyWindow(uid);
+  };
+
   return (
     <span className="actions">
       <span>
@@ -105,6 +116,7 @@ const WatchListActions = ({ uid }) => {
           placement="top"
           arrow
           TransitionComponent={Grow}
+          onClick={handleBuyClick}
         >
           <button className="buy">Buy</button>
         </Tooltip>
